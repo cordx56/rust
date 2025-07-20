@@ -1749,6 +1749,8 @@ impl<'tcx> VnState<'_, 'tcx> {
 }
 
 impl<'tcx> MutVisitor<'tcx> for VnState<'_, 'tcx> {
+    const VISIT_DEBUG_INFO: bool = true;
+
     fn tcx(&self) -> TyCtxt<'tcx> {
         self.tcx
     }
@@ -1846,7 +1848,7 @@ impl<'tcx> MutVisitor<'tcx> for StorageRemover<'tcx> {
             StatementKind::StorageLive(l) | StatementKind::StorageDead(l)
                 if self.reused_locals.contains(l) =>
             {
-                stmt.make_nop()
+                stmt.make_nop(true)
             }
             _ => self.super_statement(stmt, loc),
         }
